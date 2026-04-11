@@ -1,0 +1,14 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  release:
+    uses: Roberdan/convergio/.github/workflows/reusable-release-rust.yml@main
+    with:
+      generate-sbom: true
+    secrets:
+      PAT: ${{ secrets.PAT }}

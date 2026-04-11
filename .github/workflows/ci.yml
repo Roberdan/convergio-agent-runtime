@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "deny.toml"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "deny.toml"
+      - ".github/workflows/ci.yml"
+
+jobs:
+  ci:
+    uses: Roberdan/convergio/.github/workflows/reusable-ci-rust.yml@main
+    with:
+      coverage-threshold: 0
+      run-deny: true
+      run-semver: true
+      run-udeps: true
+      run-mutants: false

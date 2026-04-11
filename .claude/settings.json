@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(cargo check*)",
+      "Bash(cargo test*)",
+      "Bash(cargo build*)",
+      "Bash(cargo clippy*)",
+      "Bash(cargo fmt*)",
+      "Bash(cargo deny*)",
+      "Bash(cargo audit*)",
+      "Bash(cargo tarpaulin*)",
+      "Bash(cargo semver-checks*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git show*)",
+      "Bash(git rev-parse*)",
+      "Bash(git worktree*)",
+      "Bash(curl -s http://localhost:8420/*)",
+      "Bash(gh pr *)",
+      "Bash(gh run *)",
+      "Bash(gh release *)",
+      "Bash(wc -l *)",
+      "Bash(find * -name *.rs*)",
+      "Bash(ls *)"
+    ]
+  },
+  "lsp": {
+    "rust": {
+      "command": "rust-analyzer",
+      "languages": ["rust"],
+      "initializationOptions": {
+        "cargo": {
+          "allFeatures": true
+        },
+        "checkOnSave": {
+          "command": "clippy"
+        }
+      }
+    }
+  }
+}

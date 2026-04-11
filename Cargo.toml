@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = ["crates/convergio-agent-runtime"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "LicenseRef-Convergio-Community"
+repository = "https://github.com/Roberdan/convergio-agent-runtime"
+
+[workspace.dependencies]
+# SDK dependencies
+convergio-types = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.0" }
+# Uncomment as needed:
+# convergio-telemetry = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.0" }
+# convergio-security = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.0" }
+# convergio-db = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.0" }
+
+# Common deps — pin same versions as SDK for compatibility
+thiserror = "1"
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.44", features = ["macros", "rt-multi-thread", "signal", "sync", "time", "fs", "io-util"] }
+tracing = "0.1"
+axum = { version = "0.7", features = ["ws", "multipart"] }

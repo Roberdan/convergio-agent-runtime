@@ -1,0 +1,13 @@
+name: Update Cargo.lock
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/Cargo.toml"
+
+jobs:
+  lockfile:
+    uses: Roberdan/convergio/.github/workflows/reusable-lockfile-update.yml@main
+    secrets:
+      PAT: ${{ secrets.PAT }}
