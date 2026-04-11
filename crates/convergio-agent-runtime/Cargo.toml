@@ -7,10 +7,25 @@ license.workspace = true
 
 [dependencies]
 convergio-types = { workspace = true }
-thiserror = { workspace = true }
+convergio-db = { workspace = true }
+convergio-ipc = { workspace = true }
+convergio-telemetry = { workspace = true }
+convergio-workspace = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-tokio = { workspace = true }
-tracing = { workspace = true }
-axum = { workspace = true }
 chrono = { workspace = true }
+rusqlite = { workspace = true }
+uuid = { workspace = true }
+thiserror = { workspace = true }
+r2d2 = { workspace = true }
+axum = { workspace = true }
+hostname = "0.4"
+dirs = { workspace = true }
+libc = "0.2"
+reqwest = { workspace = true }
+tempfile = { version = "3", optional = true }
+
+[dev-dependencies]
+tempfile = "3"

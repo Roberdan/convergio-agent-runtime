@@ -43,6 +43,14 @@ crate = "convergio-db"
 allow = ["LicenseRef-Convergio-Community"]
 crate = "convergio-security"
 
+[[licenses.exceptions]]
+allow = ["LicenseRef-Convergio-Community"]
+crate = "convergio-workspace"
+
+[[licenses.exceptions]]
+allow = ["LicenseRef-Convergio-Community"]
+crate = "convergio-ipc"
+
 [bans]
 multiple-versions = "warn"
 wildcards = "allow"
@@ -50,4 +58,7 @@ wildcards = "allow"
 [sources]
 unknown-registry = "deny"
 unknown-git = "allow"
-allow-git = ["https://github.com/Roberdan/convergio-sdk"]
+allow-git = [
+    "https://github.com/Roberdan/convergio-sdk",
+    "https://github.com/Roberdan/convergio-ipc",
+]
