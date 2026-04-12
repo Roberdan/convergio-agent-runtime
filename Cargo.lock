@@ -234,10 +234,10 @@ version = "0.1.1"
 dependencies = [
  "axum",
  "chrono",
- "convergio-db 0.1.6",
+ "convergio-db 0.1.7",
  "convergio-ipc",
- "convergio-telemetry",
- "convergio-types",
+ "convergio-telemetry 0.1.7",
+ "convergio-types 0.1.7",
  "convergio-workspace",
  "dirs",
  "hostname",
@@ -260,7 +260,7 @@ version = "0.1.2"
 source = "git+https://github.com/Roberdan/convergio-db?tag=v0.1.2#c5c7d26f3c82361ca00eaa5414442da9f5531010"
 dependencies = [
  "axum",
- "convergio-types",
+ "convergio-types 0.1.6",
  "r2d2",
  "r2d2_sqlite",
  "rusqlite",
@@ -269,11 +269,11 @@ dependencies = [
 
 [[package]]
 name = "convergio-db"
-version = "0.1.6"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=convergio-sdk-v0.1.6#175aaec0da0e1fe3f6d1384ca0c6d259c12db268"
+version = "0.1.7"
+source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.7#8d9c143cd5a6c16be5eb274cc09b2540307b620a"
 dependencies = [
  "chrono",
- "convergio-types",
+ "convergio-types 0.1.7",
  "r2d2",
  "r2d2_sqlite",
  "rusqlite",
@@ -291,8 +291,8 @@ dependencies = [
  "axum",
  "chrono",
  "convergio-db 0.1.2",
- "convergio-telemetry",
- "convergio-types",
+ "convergio-telemetry 0.1.6",
+ "convergio-types 0.1.6",
  "futures-core",
  "libc",
  "r2d2",
@@ -311,7 +311,20 @@ name = "convergio-telemetry"
 version = "0.1.6"
 source = "git+https://github.com/Roberdan/convergio-sdk?tag=convergio-sdk-v0.1.6#175aaec0da0e1fe3f6d1384ca0c6d259c12db268"
 dependencies = [
- "convergio-types",
+ "convergio-types 0.1.6",
+ "serde",
+ "serde_json",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "convergio-telemetry"
+version = "0.1.7"
+source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.7#8d9c143cd5a6c16be5eb274cc09b2540307b620a"
+dependencies = [
+ "convergio-types 0.1.7",
  "serde",
  "serde_json",
  "tracing",
@@ -333,12 +346,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "convergio-types"
+version = "0.1.7"
+source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.7#8d9c143cd5a6c16be5eb274cc09b2540307b620a"
+dependencies = [
+ "axum",
+ "chrono",
+ "dirs",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "convergio-workspace"
 version = "0.1.0"
 dependencies = [
  "axum",
- "convergio-db 0.1.6",
- "convergio-types",
+ "convergio-db 0.1.7",
+ "convergio-types 0.1.7",
  "serde",
  "serde_json",
  "tempfile",
@@ -787,15 +813,14 @@ dependencies = [
 
 [[package]]
 name = "hyper-rustls"
-version = "0.27.7"
+version = "0.27.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3c93eb611681b207e1fe55d5a71ecf91572ec8a6705cdb6857f7d8d5242cf58"
+checksum = "c2b52f86d1d4bc0d6b4e6826d960b1b333217e07d36b882dca570a5e1c48895b"
 dependencies = [
  "http",
  "hyper",
  "hyper-util",
  "rustls",
- "rustls-pki-types",
  "tokio",
  "tokio-rustls",
  "tower-service",
@@ -1282,9 +1307,9 @@ checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "pkg-config"
-version = "0.3.32"
+version = "0.3.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
+checksum = "19f132c84eca552bf34cab8ec81f1c1dcc229b811638f9d283dceabe58c5569e"
 
 [[package]]
 name = "potential_utf"

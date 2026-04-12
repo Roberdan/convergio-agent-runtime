@@ -13,9 +13,9 @@ repository = "https://github.com/Roberdan/convergio-agent-runtime"
 
 [workspace.dependencies]
 # SDK dependencies
-convergio-types = { git = "https://github.com/Roberdan/convergio-sdk", tag = "convergio-sdk-v0.1.6" }
-convergio-db = { git = "https://github.com/Roberdan/convergio-sdk", tag = "convergio-sdk-v0.1.6" }
-convergio-telemetry = { git = "https://github.com/Roberdan/convergio-sdk", tag = "convergio-sdk-v0.1.6" }
+convergio-types = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.7" }
+convergio-db = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.7" }
+convergio-telemetry = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.7" }
 
 # Extracted crate dependencies
 convergio-ipc = { git = "https://github.com/Roberdan/convergio-ipc", tag = "v0.1.2" }
