@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.2...convergio-agent-runtime-v0.1.3) (2026-04-12)
+
+
+### Bug Fixes
+
+* **security:** audit hardening — path traversal, sentinel injection, input validation ([#6](https://github.com/Roberdan/convergio-agent-runtime/issues/6)) ([c3276f5](https://github.com/Roberdan/convergio-agent-runtime/commit/c3276f54e7bed89e6c5b0df07ca47122b24344a2))
+
 ## [0.1.2](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.1...convergio-agent-runtime-v0.1.2) (2026-04-12)
 
 
