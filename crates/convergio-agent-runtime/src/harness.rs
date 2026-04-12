@@ -89,14 +89,18 @@ mod tests {
 
     #[test]
     fn write_baseline_creates_init_sh() {
-        let tmp = tempfile::tempdir().unwrap();
-        write_baseline_script(tmp.path()).unwrap();
-        let init = tmp.path().join("init.sh");
+        let _tmp = tempfile::tempdir().unwrap();
+        // Create a relative path by using current dir as base
+        let rel_base = std::path::Path::new(".");
+        write_baseline_script(rel_base).unwrap();
+        let init = rel_base.join("init.sh");
         assert!(init.exists());
-        let content = fs::read_to_string(init).unwrap();
+        let content = fs::read_to_string(&init).unwrap();
         assert!(content.contains("cargo check"));
         assert!(content.contains("cargo test"));
         assert!(content.contains("Baseline PASSED"));
+        // Cleanup
+        let _ = fs::remove_file(init);
     }
 
     #[test]

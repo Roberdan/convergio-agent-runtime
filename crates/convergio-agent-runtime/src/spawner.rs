@@ -314,14 +314,17 @@ mod tests {
 
     #[test]
     fn write_instructions_creates_task_and_init() {
-        let tmp = tempfile::tempdir().unwrap();
-        let path = write_instructions(tmp.path(), "Test task").unwrap();
+        let rel_base = std::path::Path::new(".");
+        let path = write_instructions(rel_base, "Test task").unwrap();
         assert!(path.exists());
-        let content = fs::read_to_string(path).unwrap();
+        let content = fs::read_to_string(&path).unwrap();
         assert!(content.contains("Test task"));
         assert!(content.contains("ONE feature at a time"));
-        let init = tmp.path().join("init.sh");
+        let init = rel_base.join("init.sh");
         assert!(init.exists());
+        // Cleanup
+        let _ = fs::remove_file(&path);
+        let _ = fs::remove_file(init);
     }
 
     #[test]
