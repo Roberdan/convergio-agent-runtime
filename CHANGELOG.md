@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.3...convergio-agent-runtime-v0.1.4) (2026-04-12)
+
+
+### Documentation
+
+* add .env.example with required environment variables ([#8](https://github.com/Roberdan/convergio-agent-runtime/issues/8)) ([2bd5421](https://github.com/Roberdan/convergio-agent-runtime/commit/2bd54212ebcc0308d83cc1a7fa4a418ce79ef1b1))
+
 ## [0.1.3](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.2...convergio-agent-runtime-v0.1.3) (2026-04-12)
 
 
