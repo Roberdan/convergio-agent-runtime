@@ -334,7 +334,7 @@ dependencies = [
 [[package]]
 name = "convergio-ipc"
 version = "0.1.2"
-source = "git+https://github.com/Roberdan/convergio-ipc?tag=v0.1.4#f1483be9f170d3eedb27a0def5ad876cbb7f0cac"
+source = "git+https://github.com/Roberdan/convergio-ipc?tag=convergio-ipc-v0.1.2#441f30ecbead07f9163e5661a1dc7b070b46406b"
 dependencies = [
  "async-stream",
  "axum",
