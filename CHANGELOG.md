@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.4...convergio-agent-runtime-v0.1.5) (2026-04-12)
+
+
+### Bug Fixes
+
+* adapt tests for SDK v0.1.9 path validation ([07e3f8a](https://github.com/Roberdan/convergio-agent-runtime/commit/07e3f8af0ddb506b6333ef2508fe51cae29c34b2))
+
 ## [0.1.4](https://github.com/Roberdan/convergio-agent-runtime/compare/convergio-agent-runtime-v0.1.3...convergio-agent-runtime-v0.1.4) (2026-04-12)
 
 
