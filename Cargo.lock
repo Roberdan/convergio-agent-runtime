@@ -285,7 +285,7 @@ dependencies = [
  "chrono",
  "convergio-db 0.1.9",
  "convergio-ipc",
- "convergio-telemetry 0.1.9",
+ "convergio-telemetry",
  "convergio-types 0.1.9",
  "convergio-workspace",
  "dirs",
@@ -306,7 +306,7 @@ dependencies = [
 [[package]]
 name = "convergio-db"
 version = "0.1.2"
-source = "git+https://github.com/Roberdan/convergio-db?tag=v0.1.3#cd77e98ad433b3bb4181cba22b86a1e4347fbb87"
+source = "git+https://github.com/Roberdan/convergio-db?tag=convergio-db-v0.1.2#6f92816037f66d131ea6b7ad8808a1aaabfe4319"
 dependencies = [
  "axum",
  "convergio-types 0.1.7",
@@ -333,15 +333,15 @@ dependencies = [
 
 [[package]]
 name = "convergio-ipc"
-version = "0.1.2"
-source = "git+https://github.com/Roberdan/convergio-ipc?tag=convergio-ipc-v0.1.2#441f30ecbead07f9163e5661a1dc7b070b46406b"
+version = "0.1.3"
+source = "git+https://github.com/Roberdan/convergio-ipc?tag=convergio-ipc-v0.1.3#8050c1bbf8b9e974f652107ae21d4b27460f1bff"
 dependencies = [
  "async-stream",
  "axum",
  "chrono",
  "convergio-db 0.1.2",
- "convergio-telemetry 0.1.7",
- "convergio-types 0.1.7",
+ "convergio-telemetry",
+ "convergio-types 0.1.9",
  "futures-core",
  "libc",
  "r2d2",
@@ -353,19 +353,6 @@ dependencies = [
  "tokio",
  "tracing",
  "uuid",
-]
-
-[[package]]
-name = "convergio-telemetry"
-version = "0.1.7"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.7#8d9c143cd5a6c16be5eb274cc09b2540307b620a"
-dependencies = [
- "convergio-types 0.1.7",
- "serde",
- "serde_json",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
 ]
 
 [[package]]
