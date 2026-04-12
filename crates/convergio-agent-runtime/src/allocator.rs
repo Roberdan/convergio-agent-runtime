@@ -11,7 +11,8 @@ use crate::types::{AgentInstance, AgentStage, RuntimeResult, SpawnRequest};
 /// Spawn a new agent instance. Returns the allocated agent ID.
 pub fn spawn(conn: &Connection, req: &SpawnRequest, node: &str) -> RuntimeResult<String> {
     let id = Uuid::new_v4().to_string();
-    let workspace = format!("/tmp/cvg-agent-{}", &id[..8]);
+    // Placeholder path — overwritten by actual worktree creation in spawn_routes
+    let workspace = format!("pending-{}", &id[..8]);
 
     conn.execute(
         "INSERT INTO art_agents \

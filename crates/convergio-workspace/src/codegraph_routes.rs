@@ -28,6 +28,15 @@ async fn handle_expand(
     State(state): State<Arc<WorkspaceState>>,
     Json(req): Json<ExpandRequest>,
 ) -> Json<Value> {
+    // Input validation: reject traversal and limit file count
+    if req.files.len() > 50 {
+        return Json(json!({"error": "too many files (max 50)"}));
+    }
+    for f in &req.files {
+        if f.contains("..") {
+            return Json(json!({"error": "path traversal not allowed"}));
+        }
+    }
     let root = std::path::Path::new(&state.repo_root);
     let result = codegraph::expand_files(&req.files, root);
     Json(json!(result))

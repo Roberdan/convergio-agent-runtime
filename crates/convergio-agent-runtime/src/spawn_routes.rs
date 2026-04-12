@@ -74,6 +74,54 @@ async fn handle_spawn(
     State(state): State<Arc<SpawnState>>,
     Json(body): Json<SpawnBody>,
 ) -> (axum::http::StatusCode, Json<Value>) {
+    // Input validation: agent_name (alphanumeric + dash/underscore, max 64 chars)
+    if body.agent_name.is_empty()
+        || body.agent_name.len() > 64
+        || !body
+            .agent_name
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+    {
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            Json(json!({"error": "agent_name must be 1-64 alphanumeric/dash/underscore chars"})),
+        );
+    }
+
+    // Input validation: org_id
+    if body.org_id.is_empty()
+        || body.org_id.len() > 64
+        || !body
+            .org_id
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+    {
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            Json(json!({"error": "org_id must be 1-64 alphanumeric/dash/underscore chars"})),
+        );
+    }
+
+    // Input validation: repo_override (no traversal, must be absolute)
+    if let Some(ref repo) = body.repo_override {
+        if repo.contains("..") || !repo.starts_with('/') {
+            return (
+                axum::http::StatusCode::BAD_REQUEST,
+                Json(json!({"error": "repo_override must be an absolute path without traversal"})),
+            );
+        }
+    }
+
+    // Input validation: instruction_file (simple filename, no path separators)
+    if let Some(ref f) = body.instruction_file {
+        if f.contains('/') || f.contains('\\') || f.contains("..") || f.is_empty() {
+            return (
+                axum::http::StatusCode::BAD_REQUEST,
+                Json(json!({"error": "instruction_file must be a simple filename"})),
+            );
+        }
+    }
+
     // Rate limit check (incident-prevention)
     match spawn_guard::check_rate_limit(&state.rate_limiter, &body.org_id).await {
         Err(msg) => {

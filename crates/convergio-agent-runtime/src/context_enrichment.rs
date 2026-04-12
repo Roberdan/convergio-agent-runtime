@@ -11,19 +11,43 @@ const MAX_FILE_CONTEXT: usize = 8000; // chars — keep TASK.md under token limi
 const MAX_FILES: usize = 6;
 
 /// Extract file paths from instructions and inject their content.
+/// Validates all paths stay within the workspace to prevent path traversal.
 pub fn enrich_with_file_context(workspace: &Path, instructions: &str) -> String {
     let paths = extract_file_paths(instructions);
     if paths.is_empty() {
         return instructions.to_string();
     }
 
+    // Canonicalize workspace for safe comparison
+    let ws_canonical = match workspace.canonicalize() {
+        Ok(p) => p,
+        Err(_) => return instructions.to_string(),
+    };
+
     let mut context = String::from("## Files you will be working with\n\n");
     let mut total_chars = 0usize;
     let mut included = 0usize;
 
     for rel_path in paths.iter().take(MAX_FILES) {
+        // Reject paths with traversal components
+        if rel_path.contains("..") {
+            tracing::warn!(path = rel_path, "skipping path with traversal component");
+            continue;
+        }
         let full_path = workspace.join(rel_path);
-        let content = match std::fs::read_to_string(&full_path) {
+        // Verify resolved path stays within workspace
+        let canonical = match full_path.canonicalize() {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+        if !canonical.starts_with(&ws_canonical) {
+            tracing::warn!(
+                path = rel_path,
+                "skipping path outside workspace (traversal attempt)"
+            );
+            continue;
+        }
+        let content = match std::fs::read_to_string(&canonical) {
             Ok(c) => c,
             Err(_) => continue,
         };
