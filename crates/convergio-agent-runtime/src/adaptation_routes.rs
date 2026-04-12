@@ -57,6 +57,7 @@ async fn handle_write(
     State(state): State<Arc<AdaptationState>>,
     Path((agent_id, name)): Path<(String, String)>,
 ) -> Json<Value> {
+    // Sentinel name is validated inside adaptation::write_sentinel (whitelist)
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => return err_json("INTERNAL", &e.to_string()),

@@ -4,8 +4,15 @@
 use std::path::Path;
 
 /// Kill a process by PID.
+/// # Safety
+/// Uses libc::kill which requires a valid PID. If the PID has been recycled
+/// by the OS, a different process may receive the signal. The caller must
+/// ensure the PID is still associated with the intended agent process.
 #[cfg(unix)]
 pub fn kill_process(pid: u32) {
+    // SAFETY: libc::kill sends SIGTERM to the specified PID. We accept
+    // the inherent TOCTOU risk of PID recycling — the reaper polls frequently
+    // (every 5s) which minimizes the window for PID reuse.
     unsafe {
         libc::kill(pid as i32, libc::SIGTERM);
     }
@@ -19,9 +26,14 @@ pub fn kill_process(pid: u32) {
 }
 
 /// Try to reap the process. Returns Some(exit_code) if exited.
+/// # Safety
+/// Uses libc::waitpid and libc::kill(pid, 0) for process status checks.
+/// Same PID-recycling caveat as `kill_process`.
 #[cfg(unix)]
 pub fn try_reap(pid: u32) -> Option<i32> {
     let mut status: i32 = 0;
+    // SAFETY: WNOHANG makes this non-blocking. We only call this for PIDs
+    // we spawned, and the polling interval (5s) limits recycling risk.
     let r = unsafe { libc::waitpid(pid as i32, &mut status, libc::WNOHANG) };
     if r > 0 {
         if libc::WIFEXITED(status) {
@@ -30,6 +42,7 @@ pub fn try_reap(pid: u32) -> Option<i32> {
         return Some(-1);
     }
     if r < 0 {
+        // SAFETY: kill(pid, 0) checks process existence without sending a signal.
         let alive = unsafe { libc::kill(pid as i32, 0) } == 0;
         if !alive {
             return Some(-1);

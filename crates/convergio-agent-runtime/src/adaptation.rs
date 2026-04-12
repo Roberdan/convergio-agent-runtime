@@ -130,10 +130,23 @@ fn query_context_changes(
     Ok(out)
 }
 
+/// Allowed sentinel names — whitelist prevents path injection.
+const VALID_SENTINELS: &[&str] = &["STOP", "PRIORITY_CHANGE", "CHECKPOINT_READY"];
+
+/// Validate sentinel name against whitelist.
+fn validate_sentinel_name(name: &str) -> RuntimeResult<()> {
+    if !VALID_SENTINELS.contains(&name) {
+        return Err(RuntimeError::Internal(format!(
+            "invalid sentinel name: {name} (allowed: {VALID_SENTINELS:?})"
+        )));
+    }
+    Ok(())
+}
+
 /// Check for sentinel files in an agent workspace.
 pub fn check_sentinel(workspace: &str) -> Option<String> {
     let sentinel_dir = std::path::Path::new(workspace).join(".convergio");
-    for name in ["STOP", "PRIORITY_CHANGE", "CHECKPOINT_READY"] {
+    for name in VALID_SENTINELS {
         if sentinel_dir.join(name).exists() {
             return Some(name.to_string());
         }
@@ -142,7 +155,9 @@ pub fn check_sentinel(workspace: &str) -> Option<String> {
 }
 
 /// Write a sentinel file to an agent's workspace.
+/// Only whitelisted sentinel names are accepted (prevents path injection).
 pub fn write_sentinel(workspace: &str, sentinel: &str) -> RuntimeResult<()> {
+    validate_sentinel_name(sentinel)?;
     let dir = std::path::Path::new(workspace).join(".convergio");
     std::fs::create_dir_all(&dir).map_err(|e| RuntimeError::Internal(format!("mkdir: {e}")))?;
     std::fs::write(dir.join(sentinel), "")
@@ -151,7 +166,9 @@ pub fn write_sentinel(workspace: &str, sentinel: &str) -> RuntimeResult<()> {
 }
 
 /// Clear a sentinel file after it has been processed.
+/// Only whitelisted sentinel names are accepted (prevents path injection).
 pub fn clear_sentinel(workspace: &str, sentinel: &str) -> RuntimeResult<()> {
+    validate_sentinel_name(sentinel)?;
     let path = std::path::Path::new(workspace)
         .join(".convergio")
         .join(sentinel);
@@ -197,5 +214,21 @@ mod tests {
         }
         let err = poll_updates(&conn, "nonexistent", "1970-01-01").unwrap_err();
         assert!(err.to_string().contains("not found"));
+    }
+
+    #[test]
+    fn test_write_sentinel_rejects_invalid_name() {
+        let dir = tempfile::tempdir().unwrap();
+        let ws = dir.path().to_str().unwrap();
+        let err = write_sentinel(ws, "../escape").unwrap_err();
+        assert!(err.to_string().contains("invalid sentinel name"));
+    }
+
+    #[test]
+    fn test_clear_sentinel_rejects_invalid_name() {
+        let dir = tempfile::tempdir().unwrap();
+        let ws = dir.path().to_str().unwrap();
+        let err = clear_sentinel(ws, "../../etc/passwd").unwrap_err();
+        assert!(err.to_string().contains("invalid sentinel name"));
     }
 }
