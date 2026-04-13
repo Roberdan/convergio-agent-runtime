@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.7...v0.1.8) (2026-04-13)
+
+
+### Bug Fixes
+
+* remove duplicate brace in Cargo.toml ([3046a24](https://github.com/Roberdan/convergio-agent-runtime/commit/3046a242e9acb6c07fd595fff3c776223a4baa06))
+
 ## [0.1.7](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.6...v0.1.7) (2026-04-13)
 
 
