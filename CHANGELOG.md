@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.9](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.8...v0.1.9) (2026-04-13)
+
+
+### Bug Fixes
+
+* block agent push/PR by default ([#918](https://github.com/Roberdan/convergio-agent-runtime/issues/918)) ([253648b](https://github.com/Roberdan/convergio-agent-runtime/commit/253648b6b94dc0f4e3d1a64b8daf0cf4b1cb3e85))
+* block agent push/PR by default, add push_allowed flag ([#918](https://github.com/Roberdan/convergio-agent-runtime/issues/918)) ([a8fb5bc](https://github.com/Roberdan/convergio-agent-runtime/commit/a8fb5bc17619818a9d89196e0ac38f5cdd452df5))
+
 ## [0.1.8](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.7...v0.1.8) (2026-04-13)
 
 
