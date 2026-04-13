@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.10](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.9...v0.1.10) (2026-04-13)
+
+
+### Bug Fixes
+
+* remove path validation on workspace paths in spawner ([#20](https://github.com/Roberdan/convergio-agent-runtime/issues/20)) ([6e1fe6c](https://github.com/Roberdan/convergio-agent-runtime/commit/6e1fe6cd2056c09849a7fdb4efe07466a1cbd195))
+* remove path validation on workspace paths in spawner ([#20](https://github.com/Roberdan/convergio-agent-runtime/issues/20)) ([cd48876](https://github.com/Roberdan/convergio-agent-runtime/commit/cd4887609327602f3d389252d438405103c460d2))
+
 ## [0.1.9](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.8...v0.1.9) (2026-04-13)
 
 
