@@ -21,6 +21,7 @@ fn req(name: &str, org: &str, priority: i32) -> SpawnRequest {
         model_preference: None,
         budget_usd: 10.0,
         priority,
+        push_allowed: false,
     }
 }
 

@@ -58,6 +58,10 @@ struct SpawnBody {
     /// a real process. Used by doctor E2E checks to avoid burning tokens/CPU.
     #[serde(default)]
     dry_run: bool,
+    /// When false (default), the agent is blocked from running `git push` / `gh pr create`.
+    /// The orchestrator handles push/PR after validation.
+    #[serde(default)]
+    push_allowed: bool,
 }
 
 fn default_tier() -> String {
@@ -175,6 +179,7 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
             model_preference: body.model.clone(),
             budget_usd: body.budget_usd,
             priority: body.priority,
+            push_allowed: body.push_allowed,
         };
         match crate::allocator::spawn(&conn, &req, &hostname) {
             Ok(id) => id,
@@ -215,6 +220,16 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
                 .await;
         // Enrich with actual file contents mentioned in instructions
         let enriched = enrich_with_file_context(&workspace, &enriched);
+        // Push guard: block git push / gh pr create unless explicitly allowed
+        let enriched = if body.push_allowed {
+            enriched
+        } else {
+            format!(
+                "{enriched}\n\n\
+                 IMPORTANT: Do NOT run git push or gh pr create. \
+                 Work locally only. The orchestrator will push."
+            )
+        };
         if let Err(e) = spawner::write_instructions(&workspace, &enriched) {
             return Json(json!({"error": format!("instructions: {e}"), "agent_id": agent_id}));
         }

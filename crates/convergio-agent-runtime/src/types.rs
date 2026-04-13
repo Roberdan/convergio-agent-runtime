@@ -99,6 +99,10 @@ pub struct SpawnRequest {
     pub model_preference: Option<String>,
     pub budget_usd: f64,
     pub priority: i32,
+    /// When false (default), the agent is blocked from running `git push` / `gh pr create`.
+    /// The orchestrator handles push/PR after validation.
+    #[serde(default)]
+    pub push_allowed: bool,
 }
 
 /// A running agent instance in the runtime.

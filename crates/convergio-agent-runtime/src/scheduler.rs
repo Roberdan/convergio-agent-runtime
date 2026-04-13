@@ -92,6 +92,7 @@ pub fn dequeue(conn: &Connection) -> RuntimeResult<Option<(String, SpawnRequest)
                     model_preference: model_pref,
                     budget_usd: budget,
                     priority: prio,
+                    push_allowed: false,
                 },
             )))
         }
