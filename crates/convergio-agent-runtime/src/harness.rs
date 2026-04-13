@@ -12,8 +12,7 @@ use std::path::Path;
 /// Write init.sh baseline test script to the worktree.
 /// Agent MUST run this before starting work. If it fails, fix first.
 pub fn write_baseline_script(workspace: &Path) -> RuntimeResult<()> {
-    convergio_types::platform_paths::validate_path_components(workspace)
-        .map_err(RuntimeError::Internal)?;
+    // Workspace path is always absolute — skip validate_path_components (see spawner.rs).
     let path = workspace.join("init.sh");
     std::fs::write(&path, BASELINE_SCRIPT)
         .map_err(|e| RuntimeError::Internal(format!("write init.sh: {e}")))?;
