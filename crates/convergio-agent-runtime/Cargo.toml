@@ -4,6 +4,7 @@ description = "Agent runtime: allocation, isolation, ownership, scheduling, conc
 version = "0.1.10"
 edition.workspace = true
 license.workspace = true
+repository = "https://github.com/Roberdan/convergio-agent-runtime"
 
 [dependencies]
 convergio-types = { workspace = true }
