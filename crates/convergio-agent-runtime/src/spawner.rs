@@ -115,8 +115,9 @@ pub fn create_worktree(repo_root: &Path, name: &str) -> RuntimeResult<PathBuf> {
 /// Write task instructions and baseline script to the worktree.
 pub fn write_instructions(workspace: &Path, instructions: &str) -> RuntimeResult<PathBuf> {
     use crate::harness;
-    convergio_types::platform_paths::validate_path_components(workspace)
-        .map_err(RuntimeError::Internal)?;
+    // Workspace path is always absolute (generated internally by the daemon).
+    // validate_path_components rejects absolute paths — skip it here.
+    // Safety: workspace is built from agent_name (sanitized) via worktree creation.
     let path = workspace.join("TASK.md");
     let content = format!(
         "{header}\n\n---\n\n{instructions}",
