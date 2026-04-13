@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.6...v0.1.7) (2026-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update convergio-ipc to v0.1.6 (SDK v0.1.9 aligned) ([b985570](https://github.com/Roberdan/convergio-agent-runtime/commit/b985570b13690e8e024b13b39c5be1eb91c31bff))
+
 ## [0.1.6](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.5...v0.1.6) (2026-04-13)
 
 
