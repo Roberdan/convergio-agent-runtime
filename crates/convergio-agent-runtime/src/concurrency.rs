@@ -195,6 +195,7 @@ mod tests {
                 model_preference: None,
                 budget_usd: 1.0,
                 priority: 1,
+                push_allowed: false,
             };
             crate::scheduler::enqueue(&conn, &req, Some(100)).unwrap();
         }

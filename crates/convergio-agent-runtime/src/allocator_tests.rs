@@ -20,6 +20,7 @@ fn sample_request() -> SpawnRequest {
         model_preference: Some("claude-opus-4".into()),
         budget_usd: 10.0,
         priority: 5,
+        push_allowed: false,
     }
 }
 
