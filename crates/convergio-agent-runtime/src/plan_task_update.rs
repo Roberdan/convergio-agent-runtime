@@ -1,18 +1,20 @@
 /// Update plan task status after agent completion.
 /// Reads task_id from art_agents, then calls the plan-db task/update API.
 pub fn update_plan_task(pool: &convergio_db::pool::ConnPool, agent_id: &str, status: &str) {
-    let task_id: Option<i64> = pool
-        .get()
-        .ok()
-        .and_then(|conn| {
-            conn.query_row(
+    let task_id: Option<i64> = match pool.get() {
+        Ok(conn) => conn
+            .query_row(
                 "SELECT task_id FROM art_agents WHERE id = ?1",
                 rusqlite::params![agent_id],
                 |row| row.get(0),
             )
             .ok()
-        })
-        .flatten();
+            .flatten(),
+        Err(e) => {
+            tracing::warn!(agent_id, "plan_task_update: DB pool error: {e}");
+            None
+        }
+    };
 
     let Some(task_id) = task_id else {
         tracing::debug!(agent_id, "no task_id linked — skipping plan update");

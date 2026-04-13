@@ -56,7 +56,14 @@ pub fn enrich_with_file_context(workspace: &Path, instructions: &str) -> String 
             if remaining < 200 {
                 break;
             }
-            format!("{}...(truncated)", &content[..remaining])
+            // Safe truncation on char boundary to avoid UTF-8 panics
+            let safe_end = content
+                .char_indices()
+                .take_while(|(i, _)| *i < remaining)
+                .last()
+                .map(|(i, c)| i + c.len_utf8())
+                .unwrap_or(0);
+            format!("{}...(truncated)", &content[..safe_end])
         } else {
             content.clone()
         };

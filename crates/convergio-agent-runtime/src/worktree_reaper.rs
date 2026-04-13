@@ -65,7 +65,15 @@ pub fn reap_orphaned_worktrees(repo_root: &str, pool: &ConnPool) -> WorktreeReap
 
     // Incident-prevention: reduced from 24h to 2h
     let cutoff = SystemTime::now() - Duration::from_secs(2 * 60 * 60);
-    let active_paths = active_worktree_paths(pool);
+    let active_paths = match active_worktree_paths(pool) {
+        Ok(paths) => paths,
+        Err(e) => {
+            tracing::error!(
+                "cannot query active worktrees, aborting reap to prevent data loss: {e}"
+            );
+            return report;
+        }
+    };
 
     for entry in entries.flatten() {
         let path = entry.path();
@@ -156,22 +164,21 @@ pub fn reap_orphaned_worktrees(repo_root: &str, pool: &ConnPool) -> WorktreeReap
 }
 
 /// Query active agent workspace paths from the runtime DB.
-fn active_worktree_paths(pool: &ConnPool) -> Vec<String> {
-    let conn = match pool.get() {
-        Ok(c) => c,
-        Err(_) => return vec![],
-    };
-    let mut stmt = match conn.prepare(
-        "SELECT workspace_path FROM art_agents \
-         WHERE stage IN ('running', 'spawning', 'borrowed') \
-         AND workspace_path IS NOT NULL",
-    ) {
-        Ok(s) => s,
-        Err(_) => return vec![],
-    };
-    stmt.query_map([], |row| row.get::<_, String>(0))
+/// Returns Err on DB failure to prevent fail-open (reaping active worktrees).
+fn active_worktree_paths(pool: &ConnPool) -> Result<Vec<String>, String> {
+    let conn = pool.get().map_err(|e| format!("DB pool error: {e}"))?;
+    let mut stmt = conn
+        .prepare(
+            "SELECT workspace_path FROM art_agents \
+             WHERE stage IN ('running', 'spawning', 'borrowed') \
+             AND workspace_path IS NOT NULL",
+        )
+        .map_err(|e| format!("DB prepare error: {e}"))?;
+    let paths = stmt
+        .query_map([], |row| row.get::<_, String>(0))
         .map(|rows| rows.filter_map(|r| r.ok()).collect())
-        .unwrap_or_default()
+        .unwrap_or_default();
+    Ok(paths)
 }
 
 /// Spawn a background loop that reaps every 30 minutes.
@@ -236,7 +243,7 @@ mod tests {
     #[test]
     fn active_worktree_paths_empty_on_clean_db() {
         let pool = setup_pool();
-        let paths = active_worktree_paths(&pool);
+        let paths = active_worktree_paths(&pool).unwrap();
         assert!(paths.is_empty());
     }
 

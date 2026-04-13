@@ -35,11 +35,17 @@ async fn handle_list(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     match context::list(&conn, &agent_id) {
         Ok(entries) => Json(json!({ "entries": entries })),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route error: {e}");
+            err_json("INTERNAL", "internal error")
+        }
     }
 }
 
@@ -49,12 +55,18 @@ async fn handle_get(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     match context::get(&conn, &agent_id, &key) {
         Ok(Some(entry)) => Json(json!(entry)),
         Ok(None) => err_json("NOT_FOUND", "context key not found"),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route error: {e}");
+            err_json("INTERNAL", "internal error")
+        }
     }
 }
 
@@ -76,11 +88,17 @@ async fn handle_set(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     match context::set(&conn, &agent_id, &key, &body.value, &body.set_by) {
         Ok(entry) => Json(json!(entry)),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route error: {e}");
+            err_json("INTERNAL", "internal error")
+        }
     }
 }
 
@@ -90,12 +108,18 @@ async fn handle_delete(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     match context::delete(&conn, &agent_id, &key) {
         Ok(true) => Json(json!({ "deleted": true })),
         Ok(false) => err_json("NOT_FOUND", "context key not found"),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route error: {e}");
+            err_json("INTERNAL", "internal error")
+        }
     }
 }
 
@@ -105,7 +129,10 @@ async fn handle_seed(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     // Look up task_id and org_id from art_agents
     let agent_row: Result<(Option<i64>, String), _> = conn.query_row(
@@ -118,11 +145,17 @@ async fn handle_seed(
         Err(rusqlite::Error::QueryReturnedNoRows) => {
             return err_json("NOT_FOUND", "agent not found");
         }
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route: DB error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     match context::seed(&conn, &agent_id, task_id, &org_id) {
         Ok(count) => Json(json!({ "seeded": count })),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("context route error: {e}");
+            err_json("INTERNAL", "internal error")
+        }
     }
 }
 

@@ -29,8 +29,9 @@ async fn handle_runtime_view(State(state): State<Arc<RuntimeState>>) -> Json<ser
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => {
+            tracing::error!("DB pool error: {e}");
             return Json(serde_json::json!({
-                "error": { "code": "POOL_ERROR", "message": e.to_string() }
+                "error": { "code": "POOL_ERROR", "message": "internal database error" }
             }));
         }
     };
@@ -80,8 +81,9 @@ async fn handle_kill_all(State(state): State<Arc<RuntimeState>>) -> Json<serde_j
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => {
+            tracing::error!("DB pool error: {e}");
             return Json(serde_json::json!({
-                "error": { "code": "POOL_ERROR", "message": e.to_string() }
+                "error": { "code": "POOL_ERROR", "message": "internal database error" }
             }));
         }
     };

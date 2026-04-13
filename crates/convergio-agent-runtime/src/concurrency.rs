@@ -12,19 +12,17 @@ use crate::types::RuntimeResult;
 /// Returns true if the task is unblocked.
 pub fn can_run(conn: &Connection, task_id: i64, plan_id: i64) -> RuntimeResult<bool> {
     // A task can run if all tasks in earlier waves are done
-    let blocked: i64 = conn
-        .query_row(
-            "SELECT COUNT(*) FROM tasks t1 \
+    let blocked: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM tasks t1 \
          JOIN waves w1 ON t1.wave_id = w1.id \
          JOIN waves w2 ON w2.plan_id = w1.plan_id \
          JOIN tasks t2 ON t2.wave_id = w2.id \
          WHERE t2.id = ?1 AND w1.plan_id = ?2 \
          AND w1.id < w2.id \
          AND t1.status NOT IN ('done', 'skipped', 'cancelled')",
-            params![task_id, plan_id],
-            |r| r.get(0),
-        )
-        .unwrap_or(0);
+        params![task_id, plan_id],
+        |r| r.get(0),
+    )?;
 
     Ok(blocked == 0)
 }
@@ -32,14 +30,12 @@ pub fn can_run(conn: &Connection, task_id: i64, plan_id: i64) -> RuntimeResult<b
 /// Count how many tasks in the same wave are currently in_progress.
 /// Used for concurrency slot limiting.
 pub fn wave_concurrency(conn: &Connection, wave_id: i64) -> RuntimeResult<usize> {
-    let count: i64 = conn
-        .query_row(
-            "SELECT COUNT(*) FROM tasks \
+    let count: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM tasks \
              WHERE wave_id = ?1 AND status = 'in_progress'",
-            params![wave_id],
-            |r| r.get(0),
-        )
-        .unwrap_or(0);
+        params![wave_id],
+        |r| r.get(0),
+    )?;
     Ok(count as usize)
 }
 

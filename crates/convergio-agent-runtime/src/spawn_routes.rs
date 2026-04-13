@@ -168,7 +168,10 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
     let agent_id = {
         let conn = match state.pool.get() {
             Ok(c) => c,
-            Err(e) => return Json(json!({"error": e.to_string()})),
+            Err(e) => {
+                tracing::error!("spawn: DB pool error: {e}");
+                return Json(json!({"error": "internal database error"}));
+            }
         };
         let hostname = gethostname();
         let req = SpawnRequest {
@@ -183,14 +186,23 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
         };
         match crate::allocator::spawn(&conn, &req, &hostname) {
             Ok(id) => id,
-            Err(e) => return Json(json!({"error": format!("allocator: {e}")})),
+            Err(e) => {
+                tracing::error!(agent = body.agent_name.as_str(), "allocator error: {e}");
+                return Json(json!({"error": "agent allocation failed"}));
+            }
         }
     };
 
     // 2. Create worktree
     let workspace = match spawner::create_worktree(repo_root, &wt_name) {
         Ok(p) => p,
-        Err(e) => return Json(json!({"error": format!("worktree: {e}"), "agent_id": agent_id})),
+        Err(e) => {
+            tracing::error!(
+                agent_id = agent_id.as_str(),
+                "worktree creation failed: {e}"
+            );
+            return Json(json!({"error": "worktree creation failed", "agent_id": agent_id}));
+        }
     };
 
     // 3. Dry-run: validate infra (DB + worktree) then clean up — no process spawned.
@@ -231,7 +243,11 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
             )
         };
         if let Err(e) = spawner::write_instructions(&workspace, &enriched) {
-            return Json(json!({"error": format!("instructions: {e}"), "agent_id": agent_id}));
+            tracing::error!(
+                agent_id = agent_id.as_str(),
+                "write instructions failed: {e}"
+            );
+            return Json(json!({"error": "failed to write instructions", "agent_id": agent_id}));
         }
     }
 
@@ -261,12 +277,18 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
         Ok(spawned) => {
             // 6. Activate agent in DB
             if let Ok(conn) = state.pool.get() {
-                let _ = crate::allocator::activate(&conn, &agent_id);
-                // Store PID for reaper
-                let _ = conn.execute(
+                if let Err(e) = crate::allocator::activate(&conn, &agent_id) {
+                    tracing::warn!(agent_id = agent_id.as_str(), "activation failed: {e}");
+                }
+                if let Err(e) = conn.execute(
                     "UPDATE art_agents SET workspace_path = ?1 WHERE id = ?2",
                     rusqlite::params![workspace.to_string_lossy().as_ref(), agent_id],
-                );
+                ) {
+                    tracing::warn!(
+                        agent_id = agent_id.as_str(),
+                        "workspace_path update failed: {e}"
+                    );
+                }
             }
             // 7. Broadcast FilesClaimed intent (OODA: other agents see what we claim)
             super::spawn_enrich::emit_files_claimed(
@@ -316,7 +338,7 @@ async fn do_spawn(state: &Arc<SpawnState>, body: SpawnBody) -> Json<Value> {
         }
         Err(e) => {
             tracing::error!(agent_id = agent_id.as_str(), "spawn failed: {e}");
-            Json(json!({"error": format!("spawn: {e}"), "agent_id": agent_id}))
+            Json(json!({"error": "agent process spawn failed", "agent_id": agent_id}))
         }
     }
 }

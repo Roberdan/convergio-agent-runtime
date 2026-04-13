@@ -54,7 +54,7 @@ async fn handle_gc(
     Json(req): Json<GcRequest>,
 ) -> Json<Value> {
     let repo_root = std::path::Path::new(&state.repo_root);
-    let threshold = std::time::Duration::from_secs(req.threshold_minutes * 60);
+    let threshold = std::time::Duration::from_secs(req.threshold_minutes.saturating_mul(60));
     let report = reap_cycle(repo_root, threshold);
     Json(json!({
         "ok": true,

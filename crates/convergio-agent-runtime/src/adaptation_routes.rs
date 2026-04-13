@@ -43,13 +43,19 @@ async fn handle_poll_updates(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("adaptation route: DB pool error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     let since = q.since.as_deref().unwrap_or("1970-01-01");
     match adaptation::poll_updates(&conn, &agent_id, since) {
         Ok(updates) => Json(json!(updates)),
         Err(crate::types::RuntimeError::NotFound(_)) => err_json("NOT_FOUND", "agent not found"),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("poll_updates failed for {agent_id}: {e}");
+            err_json("INTERNAL", "failed to fetch updates")
+        }
     }
 }
 
@@ -60,7 +66,10 @@ async fn handle_write(
     // Sentinel name is validated inside adaptation::write_sentinel (whitelist)
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("adaptation route: DB pool error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     let ws = match lookup_workspace(&conn, &agent_id) {
         Ok(w) => w,
@@ -68,7 +77,10 @@ async fn handle_write(
     };
     match adaptation::write_sentinel(&ws, &name) {
         Ok(()) => Json(json!({ "ok": true, "sentinel": name })),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("write_sentinel failed for {agent_id}: {e}");
+            err_json("INTERNAL", "failed to write sentinel")
+        }
     }
 }
 
@@ -78,7 +90,10 @@ async fn handle_clear(
 ) -> Json<Value> {
     let conn = match state.pool.get() {
         Ok(c) => c,
-        Err(e) => return err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("adaptation route: DB pool error: {e}");
+            return err_json("INTERNAL", "internal database error");
+        }
     };
     let ws = match lookup_workspace(&conn, &agent_id) {
         Ok(w) => w,
@@ -86,7 +101,10 @@ async fn handle_clear(
     };
     match adaptation::clear_sentinel(&ws, &name) {
         Ok(()) => Json(json!({ "ok": true, "cleared": name })),
-        Err(e) => err_json("INTERNAL", &e.to_string()),
+        Err(e) => {
+            tracing::error!("clear_sentinel failed for {agent_id}: {e}");
+            err_json("INTERNAL", "failed to clear sentinel")
+        }
     }
 }
 
@@ -100,7 +118,10 @@ fn lookup_workspace(conn: &rusqlite::Connection, agent_id: &str) -> Result<Strin
         Ok(Some(ws)) => Ok(ws),
         Ok(None) => Err(err_json("BAD_REQUEST", "agent has no workspace")),
         Err(rusqlite::Error::QueryReturnedNoRows) => Err(err_json("NOT_FOUND", "agent not found")),
-        Err(e) => Err(err_json("INTERNAL", &e.to_string())),
+        Err(e) => {
+            tracing::error!("lookup_workspace for {agent_id}: {e}");
+            Err(err_json("INTERNAL", "internal database error"))
+        }
     }
 }
 

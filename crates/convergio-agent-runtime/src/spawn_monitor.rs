@@ -135,9 +135,24 @@ pub fn monitor_agent(
             }
         }
 
-        // Log summary
+        // Log summary (redact potential secrets from stderr)
         if !err_tail.is_empty() {
-            tracing::warn!(agent_id = agent_id.as_str(), "agent stderr:\n{err_tail}");
+            let redacted = err_tail
+                .lines()
+                .filter(|l| {
+                    let lower = l.to_lowercase();
+                    !lower.contains("token")
+                        && !lower.contains("secret")
+                        && !lower.contains("password")
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            if !redacted.is_empty() {
+                tracing::warn!(
+                    agent_id = agent_id.as_str(),
+                    "agent stderr (redacted):\n{redacted}"
+                );
+            }
         }
         tracing::info!(
             agent_id = agent_id.as_str(),

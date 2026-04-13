@@ -12,7 +12,7 @@ pub fn register(conn: &Connection, agent_id: &str, interval_secs: u64) -> Runtim
     conn.execute(
         "INSERT OR REPLACE INTO art_heartbeats (agent_id, last_seen, interval_s) \
          VALUES (?1, datetime('now'), ?2)",
-        params![agent_id, interval_secs as i64],
+        params![agent_id, i64::try_from(interval_secs).unwrap_or(i64::MAX)],
     )?;
     tracing::debug!(agent_id, interval_secs, "heartbeat registered");
     Ok(())

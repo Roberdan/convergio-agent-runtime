@@ -130,7 +130,7 @@ fn parse_copilot_jsonl(content: &str) -> Option<TokenUsage> {
     // Estimate input tokens from premium_requests if not available per-message
     // Each premium request ~= 1 API call ~= avg 3K-10K input tokens
     if total_input == 0 && premium_requests > 0 {
-        total_input = premium_requests * 5000; // conservative estimate
+        total_input = premium_requests.saturating_mul(5000); // conservative estimate
     }
 
     // Estimate cost: Opus pricing ~$15/M input, ~$75/M output

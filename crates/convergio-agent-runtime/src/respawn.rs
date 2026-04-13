@@ -218,8 +218,15 @@ fn spawn_continuation(
     .map_err(|e| RuntimeError::Internal(format!("activate continuation: {e}")))?;
 
     // Seed context + copy checkpoint
-    let _ = crate::context::seed(&conn, new_id, rec.task_id, &rec.org_id);
-    let _ = crate::context::set(&conn, new_id, "checkpoint_state", checkpoint, "system");
+    if let Err(e) = crate::context::seed(&conn, new_id, rec.task_id, &rec.org_id) {
+        tracing::warn!(agent_id = new_id, "continuation context seed failed: {e}");
+    }
+    if let Err(e) = crate::context::set(&conn, new_id, "checkpoint_state", checkpoint, "system") {
+        tracing::warn!(
+            agent_id = new_id,
+            "continuation checkpoint copy failed: {e}"
+        );
+    }
     drop(conn);
 
     crate::spawn_monitor::monitor_agent(

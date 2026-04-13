@@ -54,7 +54,7 @@ pub fn borrow_agent(
             to_org,
             to_task_id,
             budget_usd,
-            timeout_secs as i64,
+            i64::try_from(timeout_secs).unwrap_or(i64::MAX),
         ],
     )?;
 
