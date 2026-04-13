@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.10...v0.1.11) (2026-04-13)
+
+
+### Bug Fixes
+
+* add crates.io publishing metadata (description, repository) ([35d3890](https://github.com/Roberdan/convergio-agent-runtime/commit/35d389029f89102bae07aadd2163c0754344bd79))
+
 ## [0.1.10](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.9...v0.1.10) (2026-04-13)
 
 
