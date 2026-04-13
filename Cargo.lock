@@ -305,8 +305,9 @@ dependencies = [
 
 [[package]]
 name = "convergio-db"
-version = "0.1.9"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.9#ccbc95bb56a3a8e78fb713214f3f8b8ea9341f5a"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ef787dd72baf3e10703c9b6454c18093fd3d40d7b05d6c3875d1db28074e4c2"
 dependencies = [
  "chrono",
  "convergio-types",
@@ -320,8 +321,9 @@ dependencies = [
 
 [[package]]
 name = "convergio-ipc"
-version = "0.1.6"
-source = "git+https://github.com/Roberdan/convergio-ipc?tag=v0.1.6#25a99c3aa1daa21a8853d9127a9aaca9a53729ba"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78333a250754f769a615a28621937ba100e35268f975efb9499740d17c5b0808"
 dependencies = [
  "async-stream",
  "axum",
@@ -344,8 +346,9 @@ dependencies = [
 
 [[package]]
 name = "convergio-telemetry"
-version = "0.1.9"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.9#ccbc95bb56a3a8e78fb713214f3f8b8ea9341f5a"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1c311d030d9a2bfdaff6ea5bdee97cd9ce2f29c13096e445208053b7926aa5b"
 dependencies = [
  "convergio-types",
  "serde",
@@ -357,8 +360,9 @@ dependencies = [
 
 [[package]]
 name = "convergio-types"
-version = "0.1.9"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.9#ccbc95bb56a3a8e78fb713214f3f8b8ea9341f5a"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "418d31b0af7effde6c7d0dabb422c539f1d6a8cea7fe72adf366bbfd2ff21542"
 dependencies = [
  "axum",
  "chrono",
