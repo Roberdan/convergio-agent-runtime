@@ -12,3 +12,4 @@ jobs:
       generate-sbom: true
     secrets:
       PAT: ${{ secrets.PAT }}
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
