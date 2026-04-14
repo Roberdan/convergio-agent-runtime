@@ -321,9 +321,9 @@ dependencies = [
 
 [[package]]
 name = "convergio-ipc"
-version = "0.1.2"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78333a250754f769a615a28621937ba100e35268f975efb9499740d17c5b0808"
+checksum = "8a368aca044fb56772490462b80437906a75e6eabdcf7342c122cfbb33bfe55e"
 dependencies = [
  "async-stream",
  "axum",
