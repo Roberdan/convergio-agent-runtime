@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.12](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.11...v0.1.12) (2026-04-14)
+
+
+### Bug Fixes
+
+* pass CARGO_REGISTRY_TOKEN to release workflow ([279dc9a](https://github.com/Roberdan/convergio-agent-runtime/commit/279dc9a492541b96c304cb8c15c6a3c392e0994b))
+* second-pass security and quality audit ([83d080e](https://github.com/Roberdan/convergio-agent-runtime/commit/83d080e4ce71d2237670ab4a94225e6ac0ee7c93))
+
 ## [0.1.11](https://github.com/Roberdan/convergio-agent-runtime/compare/v0.1.10...v0.1.11) (2026-04-13)
 
 
